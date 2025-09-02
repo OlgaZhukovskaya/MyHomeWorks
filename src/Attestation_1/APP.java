@@ -1,79 +1,125 @@
 package Attestation_1;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class APP {
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
+        List<Person> people = new ArrayList<>();
+        Map<String, Person> peopleMap = new HashMap<>();
+
 
         //Создаем покупателя
-        System.out.println("Введите имя покупателя: ");
-        String name = scanner.nextLine();
-        while (name.trim().length()<3 || name.trim().isEmpty()){
-            System.out.println("Некорректное имя. Введите имя длиной не менее 3х символов");
-            name = scanner.nextLine();
-        }
+        System.out.println("=== ВВОД ПОКУПАТЕЛЕЙ  ===");
 
-        System.out.println("Введите сумму денег покупателя: ");
-        double money = 0;
         while(true){
-            try {
-                money = Double.parseDouble(scanner.nextLine());
-                if (money<0){
-                    System.out.println("Деньги не могут быть отрицательными, попробуйте еще раз" );
-                } else {
-                    break;
-                }
-            } catch(NumberFormatException e){
-                System.out.println("Некорректный ввод, попробуйте еще раз: ");
-            }
-        }
+            System.out.println("Введите Покупателя или END для завершения");
+            String name = scanner.nextLine().trim();
+            if(name.equalsIgnoreCase("END")) break;
 
-        Person buyer = new Person(name, money);
+            if(name.length()<3){
+                System.out.println("Имя не может быть короче 3х символов, попорбуйле еще раз");
+                continue;
+            }
+
+            if (name.isEmpty()){
+                System.out.println("Имя не может быть пустым, попорбуйле еще раз");
+                continue;
+            }
+
+            Double money = null;
+            while(true){
+                System.out.println("Введите бюджет покупателя: ");
+                String moneyStr = scanner.nextLine().trim();
+                try{
+                    money = Double.parseDouble(moneyStr);
+                    if(money<0){
+                        System.out.println("Деньги не могут быть отрицательными, попорбуйле еще раз");
+                        continue;
+                    }
+                    break;
+                } catch(NumberFormatException e){
+                    System.out.println("Некорректный ввод, попорбуйле еще раз");
+                }
+            }
+
+            Person person = new Person(name, money);
+            people.add(person);
+            peopleMap.put(name, person);
+        }
 
         // Добавление продуктов
 
-        System.out.println("Введите продукты для покупателя. Формат: название - стоимость");
-        System.out.println("Чтобы закончить добавление продуктов введите слово END ");
-
+        System.out.println("=== ВВОД ПРОДУКТОВ  ===");
+        Map<String, Product> productsMap = new HashMap<>();
         while(true){
-            System.out.println("Введите название продукта или END для завершения ");
+            System.out.println("Введите название продукта или END для завершения: ");
             String productName = scanner.nextLine().trim();
+            if(productName.equalsIgnoreCase("END")) break;
 
-            if(productName.equalsIgnoreCase("END")){
-                break;
+            if(productName.isEmpty()){
+                System.out.println("Название продукта не может быть пустым, попорбуйле еще раз");
+                continue;
             }
 
-            System.out.println("Введите стоимость продукта: ");
-            double price;
-            try{
-                price = Double.parseDouble(scanner.nextLine());
-                if(price<0){
-                    System.out.println("Стоимость не может быть отрицательной. Попробуйте еще раз ");
-                    continue;
+            Double price = null;
+            while(true){
+                System.out.println("Введите стоимость продукта");
+                String priceStr = scanner.nextLine().trim();
+                try{
+                    price = Double.parseDouble(priceStr);
+                    if(price<0){
+                        System.out.println("Стоимость продукта не может быть отрицательной, попорбуйле еще раз");
+                        continue;
+                    }
+                    break;
+                } catch (NumberFormatException e){
+                    System.out.println("Некорректный ввод, попорбуйле еще раз");
                 }
-            } catch (NumberFormatException e){
-                System.out.println("Некорректный ввод стоимости. попробуйте еще раз.");
-                continue;
             }
 
             try{
                 Product product = new Product(productName, price);
-                // пытаемся купить продукт
-                if(buyer.buyProduct(product)){
-                    System.out.println("Продукт добавлен в пакет: " + product);
-                } else {
-                    System.out.println("Недостаточно денег для продукта: " + product);
-                }
-            } catch(IllegalArgumentException e){
-                System.out.println("Ошибка: " + e.getMessage());
+                productsMap.put(productName,product);
+            } catch (IllegalArgumentException e){
+                System.out.println("Ошибка при вводе продукта: "+ e.getMessage());
             }
         }
 
-        // ИТОГ
 
-        System.out.println("\n === Итог покупки ===");
-        System.out.println(buyer);
+        // ВВОД ПОКУПОК
+
+        System.out.println("=== ВВОД ПОКУПОК  ===");
+        while(true){
+            System.out.println("Введите имя покупателя или END для завершения: ");
+            String personName = scanner.nextLine().trim();
+            if (personName.equalsIgnoreCase("END")) break;
+
+            if(!peopleMap.containsKey(personName)){
+                System.out.println("Покупатель с таким именем не найде, попробуйте еще раз ");
+                continue;
+            }
+
+            System.out.println("Введите название покупаемого продукта ");
+            String productName = scanner.nextLine().trim();
+
+            Product product = productsMap.get(productName);
+            if(product == null){
+                System.out.println("Продукт с таким названием не найден, попробуйте еще раз  ");
+                continue;
+            }
+
+            // ПОПЫТКА ПОКУПКИ
+
+            Person person = peopleMap.get(personName);
+            person.buyProduct(product);
+        }
+
+        // ИТОГ
+        System.out.println("=== ИТОГ ПОКУПОК ===");
+        for( Person p: people){
+            System.out.println(p.getName() + ": " + p.getProductNames());
+        }
 
         scanner.close();
     }

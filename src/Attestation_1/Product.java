@@ -7,24 +7,14 @@ public class Product {
     private double price;
 
     public Product(String name, double price){
-        if(name==null || name.trim().isEmpty()){
-            throw new IllegalArgumentException("Название продукта не может быть пустым");
-        }
-        if(price<0) {
-            throw new IllegalArgumentException("Стоимосто не может быть отрицательной");
-        }
-        this.name=name;
-        this.price=price;
+        setName(name);
+        setPrice(price);
     }
 
     // геттеры
 
     public String getName(){
         return name;
-    }
-
-    public double getPrice(){
-        return price;
     }
 
     // сеттеры
@@ -36,6 +26,10 @@ public class Product {
         this.name=name;
     }
 
+    public double getPrice(){
+        return price;
+    }
+
     public void setPrice(double price){
         if(price<0){
            throw new IllegalArgumentException("Стоимосто не может быть отрицательной");
@@ -45,19 +39,16 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+        return " купил " + name + " по цене " + price + " рублей ";
     }
 
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if(!(o instanceof Product)) return false;
         Product product = (Product) o;
         return Double.compare(product.price, price) == 0 &&
-               Objects.equals(name, product.name);
+               name.equals(product.name);
     }
 
     @Override

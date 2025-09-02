@@ -21,6 +21,20 @@ public class Person {
         return name;
     }
 
+    public String getProductNames(){
+        if (products.length == 0) {
+            return "Нет покупок";
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int i =0; i< products.length; i++){
+            sb.append(products[i].getName());
+            if(i<products.length-1){
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+
     public double getMoney(){
         return money;
     }
@@ -45,35 +59,34 @@ public class Person {
         this.money=money;
     }
 
-    //Метод для покупки пордукта
+    // Попытка купить продукт
 
-    public boolean buyProduct(Product product){
-        if(product == null) return false;
-        if(this.money >= product.getPrice()){
-            // добавляем пордукт в пакет
+    public void buyProduct(Product product){
+        if(product == null) return;
+        if(this.money - product.getPrice()>=0){
+            // добавляем продукт в пакет
             this.products = Arrays.copyOf(this.products, this.products.length +1);
             this.products[this.products.length - 1] = product;
             // списываем деньги
             this.money -= product.getPrice();
-            return true;
+            System.out.println(this.name+" купил "+ product.getName());
+        } else {
+            System.out.println(this.name+" не может себе позводить "+ product.getName());
         }
-        // недостаточно денег
-        return false;
     }
 
     @Override
     public String toString(){
         return "Person{" +
-                "name='" + name + '\'' +
-                ", money=" + money +
-                ", products=" + Arrays.toString(products)+
-                '}';
+                "name=" + name +
+                "money=" + money +
+                "product = " + Arrays.toString(products);
     }
 
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if(!(o instanceof Person)) return false;
         Person person = (Person) o;
         return Double.compare(person.money, money) == 0 &&
                 Objects.equals(name, person.name) &&
