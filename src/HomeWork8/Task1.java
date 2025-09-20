@@ -6,20 +6,25 @@ import java.util.Set;
 
 public class Task1 {
        // Метод возвращает набор уникальных элементов из списка
-        public static <T> Set<T> getUniqueElements(ArrayList<T> list) {
+        public static Set<String> getUniqueElements(ArrayList<String> list) {
             return new LinkedHashSet<>(list);
         }
 
         // Стартовый метод программы — точка входа
         public static void main(String[] args) {
-            ArrayList<Integer> numbers = new ArrayList<>();
-            numbers.add(1);
-            numbers.add(2);
-            numbers.add(2);
-            numbers.add(3);
-            numbers.add(1);
+            ArrayList<String> elements = new ArrayList<>();
+            elements.add("Cat");
+            elements.add("Cat");
+            elements.add("Cow");
+            elements.add("Dog");
+            elements.add("Cat");
+            elements.add("Mouse");
+            elements.add("Tiger");
+            elements.add("Cat");
+            elements.add("Tiger");
+            elements.add("Cow");
 
-            Set<Integer> uniqueNumbers = getUniqueElements(numbers);
-            System.out.println("Уникальные элементы: " + uniqueNumbers);
+            Set<String> uniqueElements = getUniqueElements(elements);
+            System.out.println("Уникальные элементы: " + uniqueElements);
         }
 }
