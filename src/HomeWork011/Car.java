@@ -1,7 +1,4 @@
-package HomeWork9;
-
-import java.util.*;
-import java.util.stream.*;
+package HomeWork011;
 
 public class Car {
     // Поля класса с приватным модификатором доступа

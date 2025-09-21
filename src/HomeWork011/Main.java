@@ -1,7 +1,6 @@
-package HomeWork9;
+package HomeWork011;
 
 import java.util.*;
-import java.util.stream.*;
 
 public class Main {
     public static void main(String[] args) {
