@@ -15,4 +15,17 @@ public class Potion extends Item {
         System.out.println("Выпито зелье: +" + heal + " HP. Текущее HP: " + p.getHp());
         p.getInventory().remove(this);
     }
+
+    @Override
+    public String describe() {
+
+        // у зелья есть heal, вернём имя и 
+        // сколько heal в нём есть
+        return super.getName() + " (+" + heal + " HP)" ;
+    }
+
+    @Override
+    public String save() {
+        return super.getName() + ":" + heal;  
+    }
 }

@@ -22,8 +22,40 @@ public class Room {
         return neighbors;
     }
 
+    // возвращаем следующую комнату или null
+    // если по запрошенному направлению
+    // комнаты нет
+    public Room getNeighborByDirection(String direction) {
+       return neighbors.get(direction);
+    }
+
     public List<Item> getItems() {
         return items;
+    }
+
+    // возвращаем из комнаты предмет если есть
+    // или null если его нет по его имени, если
+    // on есть мы его удаляем из комнаты
+    public Item getItem(String name) {
+
+        // плохо что в модели items - это list
+        // придётся итерироваться, по-хорошему тут
+        // тоже можно было бы сделать hash
+        Iterator<Item> iterator = items.iterator();
+
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            String iname = item.getName();
+
+               // берём первое подошедшее
+               // по имени
+               if (iname.equals(name)) {
+                   iterator.remove();
+                   return item;
+               }
+       } 
+       // ничего не нашли
+       return null; 
     }
 
     public Monster getMonster() {

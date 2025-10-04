@@ -15,4 +15,16 @@ public class Weapon extends Item {
         System.out.println("Оружие экипировано. Атака теперь: " + p.getAttack());
         p.getInventory().remove(this);
     }
+
+    @Override
+    public String describe() {
+
+        // у оружения есть bonus к аттаке
+        return super.getName() + " (+" + bonus + ")" ;
+    }
+
+    @Override
+    public String save() {
+        return super.getName() + ":" + bonus;
+    }
 }

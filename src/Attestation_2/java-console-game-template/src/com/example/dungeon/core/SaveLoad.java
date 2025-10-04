@@ -17,7 +17,7 @@ public class SaveLoad {
             Player p = s.getPlayer();
             w.write("player;" + p.getName() + ";" + p.getHp() + ";" + p.getAttack());
             w.newLine();
-            String inv = p.getInventory().stream().map(i -> i.getClass().getSimpleName() + ":" + i.getName()).collect(Collectors.joining(","));
+            String inv = p.getInventory().stream().map(i -> i.getClass().getSimpleName() + ":" + i.save()).collect(Collectors.joining(","));
             w.write("inventory;" + inv);
             w.newLine();
             w.write("room;" + s.getCurrent().getName());
@@ -40,25 +40,44 @@ public class SaveLoad {
                 String[] parts = line.split(";", 2);
                 if (parts.length == 2) map.put(parts[0], parts[1]);
             }
+
+            // заружаем игрока
             Player p = s.getPlayer();
             String[] pp = map.getOrDefault("player", "player;Hero;10;3").split(";");
-            p.setName(pp[1]);
-            p.setHp(Integer.parseInt(pp[2]));
-            p.setAttack(Integer.parseInt(pp[3]));
+            p.setName(pp[0]);
+            p.setHp(Integer.parseInt(pp[1]));
+            p.setAttack(Integer.parseInt(pp[2]));
+
+            // заружаем inventory
             p.getInventory().clear();
             String inv = map.getOrDefault("inventory", "");
             if (!inv.isBlank()) for (String tok : inv.split(",")) {
-                String[] t = tok.split(":", 2);
-                if (t.length < 2) continue;
+                String[] t = tok.split(":", 3);
+                if (t.length < 3) continue;
+  
+                // второй параметр в save item string - это
+                // heal или attack, переводим из строки в
+                // число
+                int attr = Integer.parseInt(t[2]);
+ 
                 switch (t[0]) {
-                    case "Potion" -> p.getInventory().add(new Potion(t[1], 5));
-                    case "Key" -> p.getInventory().add(new Key(t[1]));
-                    case "Weapon" -> p.getInventory().add(new Weapon(t[1], 3));
-                    default -> {
+                    case "Potion": {
+			p.getInventory().add(new Potion(t[1], attr));
+			break;
+                    }
+                    case "Key": {
+                        p.getInventory().add(new Key(t[1]));
+                        break;
+                    }
+                    case "Weapon": {
+                        p.getInventory().add(new Weapon(t[1], attr));
+                        break;
+                    }
+                    default: {
                     }
                 }
             }
-            System.out.println("Игра загружена (упрощённо).");
+            System.out.println("Игра загружена.");
         } catch (IOException e) {
             throw new UncheckedIOException("Не удалось загрузить игру", e);
         }
