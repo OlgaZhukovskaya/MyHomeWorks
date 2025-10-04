@@ -1,0 +1,3 @@
+player;Герой;20;5
+inventory;Weapon:Кольцо всевластия:11,Potion:Малое зелье:5
+room;Лес
